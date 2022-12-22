@@ -8,7 +8,7 @@ describe(LikeWidgetComponent.name, () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LikeWidgetModule]
+      imports: [LikeWidgetModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LikeWidgetComponent);
@@ -33,9 +33,41 @@ describe(LikeWidgetComponent.name, () => {
 
   it(`#${LikeWidgetComponent.prototype.like.name}
     should trigger (@Output liked) when called`, () => {
-      spyOn(component.liked, 'emit');
-      fixture.detectChanges();
-      component.like();
-      expect(component.liked.emit).toHaveBeenCalled();
+    spyOn(component.liked, 'emit');
+    fixture.detectChanges();
+    component.like();
+    expect(component.liked.emit).toHaveBeenCalled();
   });
+
+  it(`(D) Should display number of likes when clicked`, done => {
+    fixture.detectChanges();
+    component.liked.subscribe(()=>{ //Se inscreve no atributo para quando for clicado gerar as ações
+      component.likes++;
+      fixture.detectChanges();
+      const countEl:HTMLElement =  fixture.nativeElement.querySelector('.like-counter');
+      expect(countEl.textContent.trim()).toBe('1');
+      done(); //Indica ao Jasmine quando o teste deve acabar;
+    });
+
+    const likeWidgetContainer: HTMLElement = fixture.nativeElement.querySelector('.like-widget-container'); // Pega o elemento do html
+    likeWidgetContainer.click(); // Simula o evento de clique no botão
+  });
+
+  it(`(D) Should display number of likes when ENTER key is pressed`, done => {
+    fixture.detectChanges();
+    component.liked.subscribe(()=>{ //Se inscreve no atributo para quando for clicado gerar as ações
+      component.likes++;
+      fixture.detectChanges();
+      const countEl:HTMLElement =  fixture.nativeElement.querySelector('.like-counter');
+      expect(countEl.textContent.trim()).toBe('1');
+      done(); //Indica ao Jasmine quando o teste deve acabar;
+    });
+
+    const likeWidgetContainer: HTMLElement = fixture.nativeElement.querySelector('.like-widget-container'); // Pega o elemento do html
+
+    const event = new KeyboardEvent('keyup', { key: 'Enter'}); // Cria um evento do botão enter
+    likeWidgetContainer.dispatchEvent(event); // Dispacha o evento enter no botão
+  });
+
+
 });
