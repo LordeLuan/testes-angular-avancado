@@ -1,6 +1,3 @@
-import { Photo } from './shared/components/photo-board/models/photo';
-import { Observable } from 'rxjs';
-import { PhotoBoardService } from './shared/components/photo-board/photo-board.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -11,12 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'Angular testing';
 
-  public photos$: Observable<Photo[]>;
+  constructor() {}
 
-  constructor(private service: PhotoBoardService) {}
-
-  ngOnInit(): void {
-    this.photos$ = this.service.getPhotos();
-  }
-  
+  ngOnInit(): void {}
 }
