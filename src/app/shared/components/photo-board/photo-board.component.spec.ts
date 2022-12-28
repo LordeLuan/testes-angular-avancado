@@ -1,4 +1,3 @@
-import { Photo } from './models/photo';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhotoBoardComponent } from './photo-board.component';

@@ -1,15 +1,13 @@
+import { PhotoBoardServiceMock } from './../../shared/components/photo-board/services/photo-board-mock.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhotoListComponent } from './photo-list.component';
-import { buildPhotosList } from 'src/app/shared/components/photo-board/test/build-photo-list';
-import { of } from 'rxjs/internal/observable/of';
 import { PhotoBoardService } from 'src/app/shared/components/photo-board/services/photo-board.service';
 
-describe('PhotoListComponent', () => {
+describe('PhotoListComponent MOCK PROVIDER', () => {
   let component: PhotoListComponent;
   let fixture: ComponentFixture<PhotoListComponent>;
-  let service: PhotoBoardService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,14 +16,19 @@ describe('PhotoListComponent', () => {
       ], 
       imports:[
         HttpClientTestingModule
+      ],
+      providers: [  
+        // Quando chamar o PhotoBoardService, deverá usar a classe MOCK que tem o metodo getPhotos() e valor de retorno do metodo buildPhotoList
+        { 
+          provide: PhotoBoardService, 
+          useClass: PhotoBoardServiceMock
+        }
       ]
     })
     .compileComponents();
  
     fixture = TestBed.createComponent(PhotoListComponent);
     component = fixture.componentInstance;
-    // o testbed permite instanciar o service caso ele esteja disponível como provider no test bed ou em algum modulo importado nele.
-    service = TestBed.inject(PhotoBoardService); 
   });
 
   it('should create component', () => {
@@ -33,10 +36,6 @@ describe('PhotoListComponent', () => {
   });
 
   it(`(D) Should display board when data arrives`, ()=>{
-    // O Metodo OF é para transformar a lista num observable com uma lista
-    const photos = buildPhotosList();
-    spyOn(service, 'getPhotos').and.returnValue(of(photos)); 
-
     // Só chama depois do spyOn MOCKAR a resposta do metodo antes do ngOnInit ser chamado
     fixture.detectChanges();
 
@@ -47,18 +46,4 @@ describe('PhotoListComponent', () => {
     expect(loader).withContext('Should not display loader').toBeNull();
   });
 
-  it(`(D) Should display loader while waiting for data arrives`, ()=>{
-    // O Metodo OF é para transformar a lista num observable com uma lista
-    const photos = buildPhotosList();
-    spyOn(service, 'getPhotos').and.returnValue(null); 
-
-    // Só chama depois do spyon MOCKAR a resposta do metodo antes do ngOnInit ser chamado
-    fixture.detectChanges();
-
-    const board = fixture.nativeElement.querySelector('app-photo-board');
-    const loader = fixture.nativeElement.querySelector('.loader');
-    
-    expect(board).withContext('Should not display board').toBeNull();
-    expect(loader).withContext('Should display loader').not.toBeNull();
-  });
 });
